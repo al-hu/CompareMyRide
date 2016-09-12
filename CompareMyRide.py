@@ -51,11 +51,8 @@ else:
 
 
 
-# if __name__ == '__main__':
-for x in [start_lat, start_lon, end_lat, end_lon]:
-	print(x)
-print("Calculating estimates for Uber and Lyft from " + str(start_lat) + ", " + str(start_lon) + " to " + str(end_lat) + ", " +str(end_lon) + ":")
 
+print("Calculating estimates for Uber and Lyft from " + str(start_lat) + ", " + str(start_lon) + " to " + str(end_lat) + ", " +str(end_lon) + ":")
 print("Uber: Estimated Cost is " + str(uber_price_estimate) + ".")
 print("Uber: Estimated Time is " + str(uber_time_estimate) + " minutes.")
 print("Lyft: Estimated Cost is " + str(lyft_price_estimate) + ".")
