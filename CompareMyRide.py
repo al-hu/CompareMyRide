@@ -98,6 +98,7 @@ def print_results(uber_estimates = None, lyft_estimates = None):
 
         print("-------------------------------")
 
+        print("Estimates for Lyft:")
         for x in range(0, number_results_lyft):
             curr = lyft_estimates['cost_estimates'][x]
             min_cost = curr['estimated_cost_cents_min'] / 60
