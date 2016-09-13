@@ -12,15 +12,10 @@ lyft_client_token = "gAAAAABX1vxNONlyqn0Id7Rv-WyZPvNAq_u-z5lhSghC0dAZnCUv-_snT1b
 lyft_client_secret = "3BP5tUBf8N3IWdfltvgdWWLSpKorn6JM"
 
 
-uber_base_url = "https://api.uber.com/v1/estimates/price"
-lyft_url = "https://api.lyft.com/v1/cost"
+uber_price_url = "https://api.uber.com/v1/estimates/price"
+lyft_price_url = "https://api.lyft.com/v1/cost"
 lyft_auth_url = "https://api.lyft.com/oauth/token"
 
-
-# curl -X POST -H "Content-Type: application/json" \
-#      --user "JpWPeznr4Y4Y":"3BP5tUBf8N3IWdfltvgdWWLSpKorn6JM" \
-#      -d '{"grant_type": "client_credentials", "scope": "public"}' \
-#      'https://api.lyft.com/oauth/token'
      
 args = sys.argv[1:]
 
@@ -33,12 +28,6 @@ else:
     end_lat = float(args[2])
     end_lon = float(args[3])
 
-# these are just placeholders for now
-    start_lat = 37.775818
-    start_lon = -122.418028
-    end_lat = 37.774231
-    end_lon = -122.41293
-
 def get_uber_estimates(start_lat, start_lon, end_lat, end_lon):
     uber_parameters = {
         'server_token': uber_server_token,
@@ -47,7 +36,7 @@ def get_uber_estimates(start_lat, start_lon, end_lat, end_lon):
         'end_latitude': end_lat,
         'end_longitude': end_lon,
     }
-    uber_response = requests.get(uber_base_url, params=uber_parameters)
+    uber_response = requests.get(uber_price_url, params=uber_parameters)
 
     if uber_response.status_code == 422:
         print("Your distance exceeds 100 miles.  Please choose locations that are less than 100 miles apart.")
@@ -65,7 +54,7 @@ def get_lyft_access_token():
         auth = (lyft_client_id, lyft_client_secret))
 
     if lyft_auth_response.status_code != 200:
-        print("Error: " + str(response.status_code))
+        print("Error: " + str(lyft_auth_response.status_code) + " on line 53")
         quit()
     else:
         lyft_auth_token = lyft_auth_response.json()['access_token']
@@ -80,10 +69,10 @@ def get_lyft_estimates(auth_token):
         'end_lat': end_lat,
         'end_lng': end_lon,
     }
-    lyft_response = requests.get(lyft_url, params = lyft_parameters, headers = headers)
+    lyft_response = requests.get(lyft_price_url, params = lyft_parameters, headers = headers)
 
     if lyft_response.status_code != 200:
-        print("Error: " + str(response.status_code))
+        print("Error: " + str(lyft_response.status_code) + " on line 72")
         quit()
     else:
         lyft_estimates = lyft_response.json()
@@ -127,13 +116,3 @@ if __name__ == "__main__":
     access_token = get_lyft_access_token()
     lyft_estimates = get_lyft_estimates(access_token)
     print_results(uber_estimates, lyft_estimates)
-
-    # print("Calculating estimates for Uber and Lyft from " + str(start_lat) + ", " + str(start_lon) + " to " + str(end_lat) + ", " +str(end_lon) + ":")
-    # print("Uber: Estimated Cost is " + str(uber_estimates[0]) + ".")
-    # print("Uber: Estimated Time is " + str(uber_estimates[1]) + " minutes.")
-    # print("Lyft: Estimated Cost is " + str(lyft_price_estimate) + ".")
-    # print("Lyft: Estimated Cost is " + str(lyft_time_estimate) + " minutes.")
-
-    # uber_price_estimate = uber_estimates['prices'][0]['estimate']
-    # uber_time_estimate = uber_estimates['prices'][0]['duration'] / 60
-    # return [uber_price_estimate, uber_time_estimate]
